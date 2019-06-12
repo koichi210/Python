@@ -1,4 +1,4 @@
-ÿþimport os
+import os
 
 path_name="Sample.txt"
 

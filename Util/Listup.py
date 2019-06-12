@@ -1,4 +1,4 @@
-ÿþï¿½ï¿½import glob
+import glob
 
 grep_target_path = "d:\Source\**\*.h"
 

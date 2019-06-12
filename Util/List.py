@@ -1,4 +1,4 @@
-��array = []
+array = []
 print("len=", len(array))
 
 array.append("1a AAA")
@@ -25,4 +25,4 @@ for line in lines_grep:
 #[AAA]を含む行の、最初行と最後行を出力
 print("\r\n")
 print("first=" + lines_grep[0])
-print("last =" + lines_grep[-1])
+print("last =" + lines_grep[-1])

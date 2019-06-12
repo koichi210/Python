@@ -1,4 +1,4 @@
-ÿþarray = []
+array = []
 array.append("#include <AaaaOriginalSample.h>")
 array.append("#include <BbbbOriginalSample.h>")
 array.append("#include <CcccSSample.h>")
@@ -30,4 +30,4 @@ for line in lines_grep:
 print("\r\n[exclude OriginalSample.h]")
 for line in lines_grep:
     if "OriginalSample.h" not in line:
-        print(line)
+        print(line)

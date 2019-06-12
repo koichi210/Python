@@ -1,4 +1,4 @@
-ÿþimport os
+import os
 
 path_name="Sample.txt"
 
@@ -18,4 +18,4 @@ print("\r\n")
 lines_strip = [line.strip() for line in lines]
 
 for line in lines_strip:
-    print(line)
+    print(line)

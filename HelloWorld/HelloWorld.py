@@ -1,2 +1,2 @@
-ÿþstr = "Hello World!!"
-print(str)
+str = "Hello World!!"
+print(str)
