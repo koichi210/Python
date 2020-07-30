@@ -1,0 +1,21 @@
+{
+  "JENKINS_BASE_URL": "http://localhost:8080",
+  "JENKINS_USER": "guest",
+  "JENKINS_TOKEN": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  "MAIN_SYSTEM": {
+    "MANAGE": "MANAGE_KICK",
+    "WORKER": [
+      "BUILD_MAN_MAIN1",
+      "BUILD_MAN_MAIN2",
+      "BUILD_MAN_MAIN3"
+    ]
+  },
+  "SUB_SYSTEM": {
+    "MANAGE": "SUB_KICk",
+    "WORKER": [
+      "BUILD_MAN_SUB1",
+      "BUILD_MAN_SUB2",
+      "BUILD_MAN_SUB3"
+    ]
+  }
+}
