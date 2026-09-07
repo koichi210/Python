@@ -1,0 +1,103 @@
+body {
+  font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+  margin: 24px;
+  color: #222;
+}
+
+/* hidden属性は他のdisplay指定より優先させる（.toolbarのdisplay:flex対策） */
+[hidden] {
+  display: none !important;
+}
+
+.bulkLabel {
+  color: #555;
+  font-size: 13px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+  padding: 6px 14px;
+  border: 1px solid #888;
+  border-radius: 6px;
+  background: #fff;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
+
+#status {
+  color: #666;
+  font-size: 13px;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #f7f7f7;
+  border-radius: 6px;
+}
+
+.toolbarRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+#filterBox {
+  padding: 4px 8px;
+  min-width: 240px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+img.thumb {
+  width: 80px;
+  border-radius: 4px;
+}
+
+input.titleInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 6px;
+}
+
+tr.dirty td {
+  background: #fff8e1;
+}
+
+.rowError {
+  color: #c0392b;
+  font-size: 12px;
+}
+
+.rowOk {
+  color: #2e7d32;
+  font-size: 12px;
+}
