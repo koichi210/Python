@@ -40,6 +40,76 @@ def _fetch_video_details(youtube, video_ids):
     return videos
 
 
+def _get_video_ids_from_playlist(youtube, playlist_id):
+    """指定プレイリストの中身（動画ID）を全ページ集める（1ページ1 unit）。"""
+    video_ids = []
+    page_token = None
+    while True:
+        response = (
+            youtube.playlistItems()
+            .list(
+                part="contentDetails",
+                playlistId=playlist_id,
+                maxResults=50,
+                pageToken=page_token,
+            )
+            .execute()
+        )
+        for item in response.get("items", []):
+            video_ids.append(item["contentDetails"]["videoId"])
+
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+    return video_ids
+
+
+def list_my_playlists():
+    """
+    自分が持ってるプレイリスト一覧を取得する（1ページ1 unit）。
+    「ドラフト識別用に作った専用プレイリスト」を選んでもらうための一覧表示用。
+
+    戻り値: [{id, title, itemCount}, ...]
+    """
+    youtube = get_authenticated_service()
+
+    playlists = []
+    page_token = None
+    while True:
+        response = (
+            youtube.playlists()
+            .list(part="snippet,contentDetails", mine=True, maxResults=50, pageToken=page_token)
+            .execute()
+        )
+        for item in response.get("items", []):
+            playlists.append(
+                {
+                    "id": item["id"],
+                    "title": item["snippet"]["title"],
+                    "itemCount": item["contentDetails"].get("itemCount", 0),
+                }
+            )
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+    return playlists
+
+
+def list_videos_in_playlist(playlist_id):
+    """
+    指定した1つのプレイリストの中身だけを取得する。
+    「ドラフトだけを集めた専用プレイリスト」を対象にすれば、
+    Studio自身が判定した「ドラフト」の集合をそのまま扱える。
+
+    戻り値: list_my_videos() と同じ形式
+    """
+    youtube = get_authenticated_service()
+    video_ids = _get_video_ids_from_playlist(youtube, playlist_id)
+    videos = _fetch_video_details(youtube, video_ids)
+    videos.sort(key=lambda v: v["publishedAt"], reverse=True)
+    return videos
+
+
 def list_my_videos():
     """
     自分のチャンネルの動画を全件取得して返す。
@@ -64,26 +134,8 @@ def list_my_videos():
         raise ValueError("チャンネル情報が取得できなかったよ")
     uploads_playlist_id = items[0]["contentDetails"]["relatedPlaylists"]["uploads"]
 
-    # 2. そのプレイリストの中身（＝自分の全動画）のIDをページングして集める（1ページ1 unit）
-    video_ids = []
-    page_token = None
-    while True:
-        response = (
-            youtube.playlistItems()
-            .list(
-                part="contentDetails",
-                playlistId=uploads_playlist_id,
-                maxResults=50,
-                pageToken=page_token,
-            )
-            .execute()
-        )
-        for item in response.get("items", []):
-            video_ids.append(item["contentDetails"]["videoId"])
-
-        page_token = response.get("nextPageToken")
-        if not page_token:
-            break
+    # 2. そのプレイリストの中身（＝自分の全動画）のIDを集める
+    video_ids = _get_video_ids_from_playlist(youtube, uploads_playlist_id)
 
     # 3. videos.list は1回で最大50件・1 unitと軽いので、50件ずつまとめて詳細取得
     videos = _fetch_video_details(youtube, video_ids)

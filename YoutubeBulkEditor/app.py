@@ -30,6 +30,26 @@ def api_list_videos():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+@app.route("/api/playlists", methods=["GET"])
+def api_list_playlists():
+    """自分のプレイリスト一覧を取得（対象を絞り込む用のプルダウンに使う）。"""
+    try:
+        playlists = youtube_client.list_my_playlists()
+        return jsonify({"ok": True, "playlists": playlists})
+    except Exception as e:  # noqa: BLE001
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/api/playlists/<playlist_id>/videos", methods=["GET"])
+def api_list_playlist_videos(playlist_id):
+    """指定プレイリストの中身だけを取得する。"""
+    try:
+        videos = youtube_client.list_videos_in_playlist(playlist_id)
+        return jsonify({"ok": True, "videos": videos})
+    except Exception as e:  # noqa: BLE001
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
 @app.route("/api/videos/<video_id>/current", methods=["GET"])
 def api_get_current_state(video_id):
     """1本だけ現在の状態を取得する（保存前の食い違いチェック用、1 unitのみ消費）。"""

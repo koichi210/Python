@@ -2,11 +2,17 @@ let videos = [];
 
 const CACHE_KEY = "youtube_bulk_editor_cache_v1";
 
-function saveCache() {
+function saveCache(sourceLabel) {
   try {
+    const prevCache = loadCache();
+    const prevLabel = prevCache && prevCache.sourceLabel;
     localStorage.setItem(
       CACHE_KEY,
-      JSON.stringify({ videos, fetchedAt: new Date().toISOString() })
+      JSON.stringify({
+        videos,
+        fetchedAt: new Date().toISOString(),
+        sourceLabel: sourceLabel || prevLabel || "全動画",
+      })
     );
   } catch (e) {
     // 容量オーバー等は無視（キャッシュが使えないだけで動作には影響しない）
@@ -25,6 +31,8 @@ function loadCache() {
 const statusEl = document.getElementById("status");
 const loadBtn = document.getElementById("loadBtn");
 const clearCacheBtn = document.getElementById("clearCacheBtn");
+const sourceSelect = document.getElementById("sourceSelect");
+const refreshPlaylistsBtn = document.getElementById("refreshPlaylistsBtn");
 const toolbar = document.getElementById("toolbar");
 const table = document.getElementById("videoTable");
 const tbody = document.getElementById("videoTableBody");
@@ -45,6 +53,7 @@ const PRIVACY_LABEL = {
 
 loadBtn.addEventListener("click", loadVideos);
 clearCacheBtn.addEventListener("click", clearCache);
+refreshPlaylistsBtn.addEventListener("click", loadPlaylistOptions);
 filterBox.addEventListener("input", renderTable);
 filterPrivacySelect.addEventListener("change", renderTable);
 sortSelect.addEventListener("change", renderTable);
@@ -60,18 +69,51 @@ selectAll.addEventListener("change", () => {
 bulkApplyBtn.addEventListener("click", bulkApply);
 saveAllBtn.addEventListener("click", saveAllDirtyRows);
 
+async function loadPlaylistOptions() {
+  refreshPlaylistsBtn.disabled = true;
+  const originalText = refreshPlaylistsBtn.textContent;
+  refreshPlaylistsBtn.textContent = "取得中...";
+  try {
+    const res = await fetch("/api/playlists");
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "プレイリスト一覧の取得に失敗したよ");
+
+    const currentValue = sourceSelect.value;
+    sourceSelect.innerHTML = '<option value="all">全動画</option>';
+    for (const p of data.playlists) {
+      const opt = document.createElement("option");
+      opt.value = `playlist:${p.id}`;
+      opt.textContent = `📁 ${p.title}（${p.itemCount}件）`;
+      sourceSelect.appendChild(opt);
+    }
+    // 前に選んでたものがまだ一覧にあれば復元
+    if ([...sourceSelect.options].some((o) => o.value === currentValue)) {
+      sourceSelect.value = currentValue;
+    }
+  } catch (e) {
+    alert(`プレイリスト一覧の取得に失敗したよ: ${e.message}`);
+  } finally {
+    refreshPlaylistsBtn.disabled = false;
+    refreshPlaylistsBtn.textContent = originalText;
+  }
+}
+
 async function loadVideos() {
   loadBtn.disabled = true;
   statusEl.textContent = "取得中...（動画数が多いと少し時間かかるよ。APIの1日の利用上限に注意！）";
   try {
-    const res = await fetch("/api/videos");
+    const source = sourceSelect.value;
+    const endpoint =
+      source === "all" ? "/api/videos" : `/api/playlists/${source.replace("playlist:", "")}/videos`;
+    const res = await fetch(endpoint);
     const data = await res.json();
     if (!data.ok) {
       throw new Error(data.error || "取得に失敗したよ");
     }
     videos = data.videos;
-    saveCache();
-    statusEl.textContent = `${videos.length}件の動画を取得したよ（${formatNow()}時点）`;
+    const sourceLabel = source === "all" ? "全動画" : sourceSelect.selectedOptions[0].textContent;
+    saveCache(sourceLabel);
+    statusEl.textContent = `${sourceLabel}: ${videos.length}件の動画を取得したよ（${formatNow()}時点）`;
     toolbar.hidden = false;
     table.hidden = false;
     renderTable();
@@ -110,7 +152,8 @@ function restoreFromCache() {
 
   videos = cache.videos;
   const fetchedAt = new Date(cache.fetchedAt).toLocaleString("ja-JP");
-  statusEl.textContent = `前回取得したキャッシュを表示中（取得日時: ${fetchedAt}）。最新化するには「動画一覧を取得」を押してね`;
+  const sourceLabel = cache.sourceLabel || "全動画";
+  statusEl.textContent = `前回取得したキャッシュを表示中（${sourceLabel} / 取得日時: ${fetchedAt}）。最新化するには「動画一覧を取得」を押してね`;
   toolbar.hidden = false;
   table.hidden = false;
   renderTable();

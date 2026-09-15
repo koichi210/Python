@@ -8,6 +8,11 @@
 <body>
   <header>
     <h1>🎬 YouTube 動画一括編集</h1>
+    <span class="bulkLabel">取得対象:</span>
+    <select id="sourceSelect">
+      <option value="all" selected>全動画</option>
+    </select>
+    <button id="refreshPlaylistsBtn" title="プレイリスト一覧を更新">プレイリスト一覧を更新</button>
     <button id="loadBtn">動画一覧を取得</button>
     <button id="clearCacheBtn">キャッシュをクリア</button>
     <span id="status"></span>
