@@ -7,6 +7,7 @@ import codecs
 default_path_name = ""
 default_file_name = "*.h"
 
+
 class MySearch:
     EXCLUDE_TYPE_NORMAL = 0
     EXCLUDE_TYPE_REPLACE_OWN_NAME = 1
@@ -59,20 +60,21 @@ class MySearch:
                 code = self.__trim_include_code(code)
                 code = self.__trim_exclude_code(code)
 
-                #virtual部分
-                if ( self.__exclude_type == self.EXCLUDE_TYPE_REPLACE_OWN_NAME ) :
+                # virtual部分
+                if (self.__exclude_type == self.EXCLUDE_TYPE_REPLACE_OWN_NAME):
                     code = self.__trim_exclude_replace_ownname(file_name, code)
 
                 # 該当項目があれば、ファイル名出力
                 if len(code) != 0:
-                    result_str = self.__append_result(result_str, code, file_name)
+                    result_str = self.__append_result(
+                        result_str, code, file_name)
 
         return result_str
 
     def __get_file_list(self):
         grep_file_name = self.__root_path_name + self.__file_name
 
-        #リスト作成
+        # リスト作成
         file_list = glob.glob(grep_file_name, recursive=True)
         return file_list
 
@@ -103,6 +105,7 @@ class MySearch:
             result_str += line + "\r\n"
         result_str += "\r\n"
         return result_str
+
 
 class MyFileIO:
     def file_write(self, file_name, mode, data):
