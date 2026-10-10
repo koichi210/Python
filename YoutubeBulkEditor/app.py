@@ -102,4 +102,7 @@ def api_bulk_privacy():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5050, debug=True)
+    # use_reloader=False: 自動リロード監視プロセスがWindowsだとたまに不安定に
+    # なる（無応答になる）ことがあったため、安定重視でオフにしている。
+    # コードを変更したときはサーバーを手動で再起動すること。
+    app.run(host="127.0.0.1", port=5050, debug=True, use_reloader=False)

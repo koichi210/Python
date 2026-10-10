@@ -252,7 +252,10 @@ function renderTable() {
     const resultSpan = document.createElement("span");
     const doSave = (precomputedCurrent) =>
       saveRow(tr, v, titleInput, privacySelect, saveBtn, resultSpan, precomputedCurrent);
-    saveBtn.addEventListener("click", doSave);
+    // addEventListenerはクリックイベント自体を第1引数として渡してくるので、
+    // doSaveへそのまま渡すとprecomputedCurrentにEventオブジェクトが紛れ込んでしまう。
+    // 単発クリック時は必ず引数なしで呼ぶ。
+    saveBtn.addEventListener("click", () => doSave());
     // 「まとめて保存」からもこの行を保存できるように参照を持たせておく
     tr._save = doSave;
     saveTd.appendChild(saveBtn);
@@ -280,6 +283,11 @@ async function saveRow(tr, v, titleInput, privacySelect, saveBtn, resultSpan, pr
       const currentRes = await fetch(`/api/videos/${v.id}/current`);
       current = await currentRes.json();
       if (!current.ok) throw new Error(current.error || "現在の状態の確認に失敗したよ");
+    }
+    // サーバーが不安定だった等で必要な項目が欠けてる場合、紛らわしい"undefined"表示で
+    // 確認ダイアログを出すよりも、はっきりエラーとして扱う（サーバー再起動直後などに発生しうる）
+    if (current.title === undefined || current.privacyStatus === undefined) {
+      throw new Error("現在の状態がうまく取得できなかったよ。もう一度「保存」を押してみてね");
     }
 
     const titleChanged = current.title !== v.title;
