@@ -4,8 +4,8 @@ import difflib
 str_array = ["コンピューター", "コンピュータ", "コンビーフ", "コンビナート", "コンビ", "コンビニ", "コンビニエンスストア"]
 
 d = difflib.Differ()
-diff = d.compare(str_array(0), str_array(1))
-print(diff)
+diff = d.compare(str_array[0], str_array[1])
+print("\n".join(diff))
 
 
 # 総当たり
