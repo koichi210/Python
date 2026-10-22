@@ -1,4 +1,5 @@
 import requests
+from urllib import request
 from bs4 import BeautifulSoup
 
 def WebAccess1():
@@ -9,7 +10,7 @@ def WebAccess1():
 
     url = "http://www.yomiuri.co.jp/"
 
-    proxy_handler = requests.ProxyHandler(PROXIES)
+    proxy_handler = request.ProxyHandler(PROXIES)
     opener = request.build_opener(proxy_handler)
     html = opener.open(url).read()
 

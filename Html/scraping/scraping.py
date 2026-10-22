@@ -16,8 +16,8 @@ def scraping():
     soup = BeautifulSoup(html, "html.parser")
 
     #get headlines
-    mainNewsIndex = soup.find("ul", attrs={"class", "list-main-news"})
-    headlines = mainNewsIndex.find_all("span", attrs={"class", "headline"})
+    mainNewsIndex = soup.find("ul", attrs={"class": "list-main-news"})
+    headlines = mainNewsIndex.find_all("span", attrs={"class": "headline"})
 
     #print headlines
     for headline in headlines:
@@ -41,8 +41,8 @@ def scraping_proxy1():
     soup = BeautifulSoup(html, "html.parser")
 
     #get headlines
-    mainNewsIndex = soup.find("ul", attrs={"class", "list-main-news"})
-    headlines = mainNewsIndex.find_all("span", attrs={"class", "headline"})
+    mainNewsIndex = soup.find("ul", attrs={"class": "list-main-news"})
+    headlines = mainNewsIndex.find_all("span", attrs={"class": "headline"})
 
     #print headlines
     for headline in headlines:
