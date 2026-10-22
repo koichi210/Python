@@ -14,7 +14,7 @@ class P4Wrapper:
         # p4 change -o | sed -e "s/<enter description here>/\[New\]/g"
         # -e "s|//depot.*||g" | p4 change -i
         p4_cmd = "p4 change -o"
-        p4_change_form = subprocess.check_output(p4_cmd.split())
+        p4_change_form = subprocess.check_output(p4_cmd.split()).decode()
         p4_change_form = re.sub(
             "<enter description here>",
             comment,
@@ -46,7 +46,7 @@ class P4Wrapper:
         # チェンジリストは空か？
         p4_cmd = "p4 opened -c " + chenge_list
         p4_stdout = subprocess.check_output(
-            p4_cmd.split(), stderr=subprocess.STDOUT)
+            p4_cmd.split(), stderr=subprocess.STDOUT).decode()
         if "File(s) not opened on this client." in p4_stdout:
             return True
         else:
