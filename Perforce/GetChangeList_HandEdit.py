@@ -46,7 +46,7 @@ def main():
     p4.client = Environment.p4_client
 
     try:
-         p4.connect()
+        p4.connect()
         p4_info = p4.run("info")[0]
         # p4.run_login()
     except P4Exception:
