@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 
 def GetArgument():
-    parser = ArgumentParser()
+    parser = ArgumentParser(conflict_handler="resolve")
     parser.add_argument("-t",
                         "--target",
                         )
