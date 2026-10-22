@@ -15,7 +15,8 @@ WorkSheet = WorkBook.active
 f = open(ReadCsvName) 
 reader = csv.reader(f, delimiter=',') 
 for row in reader: 
-     WorkSheet.append(row) 
+     WorkSheet.append(row)
+f.close()
 
 WorkBook.save(WriteExcelName)
 WorkBook.close()

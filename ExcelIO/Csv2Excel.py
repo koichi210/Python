@@ -15,10 +15,10 @@ xlApp.Visible = 1
 
 # Bookを開く
 TemplateExcelAbsName = pathlib.Path(TemplateExcelName).resolve()
-WorkBook = xlApp.Workbooks.Open(TemplateExcelAbsName)
+WorkBook = xlApp.Workbooks.Open(str(TemplateExcelAbsName))
 
 # Sheetを選択する[1相対]
-Sheet = xlApp.Workbooks(1).Sheets(1)
+Sheet = WorkBook.Sheets(1)
 
 #Csvファイルを開く
 ReadCsvFile=open(ReadCsvName,'r')
@@ -27,6 +27,7 @@ for i,line in enumerate(ReadCsvFile.readlines()):
 	for n,label in enumerate(line.split(',')):
 		cell = Sheet.Cells(i+1,n+1)		#[A1] = Cells(1,1)
 		cell.Value = label.replace('\n','') # 終端の不要な改行削除
+ReadCsvFile.close()
 
 # pathlib.WindowsPath型
 WriteExcelAbsName_Object = pathlib.Path(WriteExcelName).resolve()
