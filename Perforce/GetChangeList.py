@@ -16,14 +16,13 @@ try:
     # NewChangeList
     change = p4.fetch_change()
     change._description = "Hello World\n"
-    change._files = file_path
-    p4.fetch_change()
+    change._files = [file_path]
+    print(p4.save_change(change))
 
     print(change)
     p4_info = p4.run("info")[0] # 情報取得
     workspace_root = p4_info["clientRoot"]
     p4.run_sync()
-    p4.run( "change", "-i" )
     # p4.run( "revert", "-a" )
     # p4.run( "client", "-o" )[0]
 
