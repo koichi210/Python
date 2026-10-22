@@ -20,6 +20,10 @@ class MySearch:
     __exclude_list = []
     __exclude_replacename = ["src", "dest"]
 
+    def __init__(self):
+        # クラス変数のリストを全インスタンスで共有しないよう、インスタンスごとに作り直す
+        self.init()
+
     def init(self):
         self.__include_list = []
         self.__exclude_list = []
