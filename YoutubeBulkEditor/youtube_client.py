@@ -228,11 +228,29 @@ def get_current_state(video_id):
 
 
 def update_privacy_status(video_id, privacy_status):
-    """公開設定だけを変更する（タイトル等はそのまま）。"""
+    """
+    公開設定だけを変更する（タイトル等はそのまま）。
+    status も update 時に丸ごと置き換わる仕様で、privacyStatus だけ送ると
+    埋め込み許可・ライセンス・子ども向け設定などが既定値に戻ってしまうので、
+    update_video() と同じく現在値を取得してから privacyStatus だけ書き換える。
+    """
     youtube = get_authenticated_service()
+
+    current = youtube.videos().list(part="status", id=video_id).execute()
+    items = current.get("items", [])
+    if not items:
+        raise ValueError(f"動画が見つからないよ: {video_id}")
+
+    status = items[0]["status"]
+    status["privacyStatus"] = privacy_status
+    # 予約公開日時(publishAt)は非公開の動画にしか設定できない。
+    # 以前の実装と同じく、非公開以外へ変える時は予約を外す。
+    if privacy_status != "private":
+        status.pop("publishAt", None)
+
     youtube.videos().update(
         part="status",
-        body={"id": video_id, "status": {"privacyStatus": privacy_status}},
+        body={"id": video_id, "status": status},
     ).execute()
 
 
