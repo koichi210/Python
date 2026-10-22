@@ -32,12 +32,12 @@ for path_name in list_up:
 
         # 該当項目があれば、ファイル名出力
         if len(list_hit_line) != 0:
-            result_open.write(path_name.join("\r\n"))
+            result_open.write(path_name + "\r\n")
             return_code = 1
 
             # 該当行を出力
             for line in list_hit_line:
-                result_open.writelines(line)
+                result_open.writelines(line + "\r\n")
             result_open.writelines("\r\n")
 
 result_open.close()
