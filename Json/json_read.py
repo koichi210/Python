@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     json_file = open(json_file_name, 'r')
     json_object = json.load(json_file)
-    json_file.close
+    json_file.close()
 
     print(json_object)
     print(json_object['JENKINS_BASE_URL'])
