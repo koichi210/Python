@@ -19,5 +19,6 @@ runcmd = subprocess.check_output(cmd.split())
 print(runcmd)
 
 print("\n" + "No4 Popen")
-runcmd = subprocess.check_output(cmd.split())
+proc = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+runcmd, _ = proc.communicate()
 print(runcmd)
